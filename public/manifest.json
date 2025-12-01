@@ -3,6 +3,7 @@
   "short_name": "Free Session",
   "description": "通知を受け取って特典をアンロック",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
