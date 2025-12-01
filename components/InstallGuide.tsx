@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Share2, Plus, Home, Smartphone } from "lucide-react";
 
 type OS = "ios" | "android" | "other";
 
@@ -11,7 +12,7 @@ export function InstallGuide() {
   useEffect(() => {
     // OS判定
     const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
-    
+
     if (/iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream) {
       setOS("ios");
     } else if (/android/i.test(userAgent)) {
@@ -24,8 +25,6 @@ export function InstallGuide() {
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e);
-      // カスタムインストールボタンを使用するため、デフォルトバナーを抑制
-      // これは意図的な動作です
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
@@ -66,42 +65,45 @@ export function InstallGuide() {
             </h2>
             <div className="space-y-6 text-left">
               <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-500 text-white font-bold">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-500 text-white font-bold text-lg">
                   1
                 </div>
-                <div className="flex-1">
-                  <p className="font-medium text-gray-900 dark:text-white">
+                <div className="flex-1 pt-1">
+                  <p className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
+                    <Share2 className="h-5 w-5" />
                     画面下部の共有ボタンをタップ
                   </p>
-                  <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                     Safariの下部にある共有アイコン（□↑）をタップしてください
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-500 text-white font-bold">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-500 text-white font-bold text-lg">
                   2
                 </div>
-                <div className="flex-1">
-                  <p className="font-medium text-gray-900 dark:text-white">
+                <div className="flex-1 pt-1">
+                  <p className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
+                    <Plus className="h-5 w-5" />
                     「ホーム画面に追加」を選択
                   </p>
-                  <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                     スクロールして「ホーム画面に追加」をタップしてください
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-500 text-white font-bold">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-500 text-white font-bold text-lg">
                   3
                 </div>
-                <div className="flex-1">
-                  <p className="font-medium text-gray-900 dark:text-white">
+                <div className="flex-1 pt-1">
+                  <p className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
+                    <Home className="h-5 w-5" />
                     ホーム画面から起動
                   </p>
-                  <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                     ホーム画面に追加されたアイコンからアプリを起動してください
                   </p>
                 </div>
@@ -111,19 +113,7 @@ export function InstallGuide() {
 
           <div className="rounded-lg bg-white/80 p-4 dark:bg-gray-800/80">
             <div className="flex items-center justify-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-              <svg
-                className="h-6 w-6 text-blue-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
-                />
-              </svg>
+              <Share2 className="h-6 w-6 text-blue-500" />
               <span className="font-medium">共有ボタン → ホーム画面に追加</span>
             </div>
           </div>
@@ -136,7 +126,7 @@ export function InstallGuide() {
             <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
               Androidでの追加方法
             </h2>
-            
+
             {deferredPrompt ? (
               <div className="space-y-4">
                 <p className="text-gray-700 dark:text-gray-300">
@@ -152,42 +142,43 @@ export function InstallGuide() {
             ) : (
               <div className="space-y-6 text-left">
                 <div className="flex items-start gap-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-500 text-white font-bold">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-green-500 text-white font-bold text-lg">
                     1
                   </div>
-                  <div className="flex-1">
-                    <p className="font-medium text-gray-900 dark:text-white">
+                  <div className="flex-1 pt-1">
+                    <p className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
                       メニューボタンをタップ
                     </p>
-                    <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                    <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                       ブラウザの右上にある「⋮」メニューをタップしてください
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-500 text-white font-bold">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-green-500 text-white font-bold text-lg">
                     2
                   </div>
-                  <div className="flex-1">
-                    <p className="font-medium text-gray-900 dark:text-white">
+                  <div className="flex-1 pt-1">
+                    <p className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
                       「ホーム画面に追加」を選択
                     </p>
-                    <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                    <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                       メニューから「ホーム画面に追加」または「アプリをインストール」を選択してください
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-500 text-white font-bold">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-green-500 text-white font-bold text-lg">
                     3
                   </div>
-                  <div className="flex-1">
-                    <p className="font-medium text-gray-900 dark:text-white">
+                  <div className="flex-1 pt-1">
+                    <p className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
+                      <Home className="h-5 w-5" />
                       ホーム画面から起動
                     </p>
-                    <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                    <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                       ホーム画面に追加されたアイコンからアプリを起動してください
                     </p>
                   </div>
@@ -200,6 +191,7 @@ export function InstallGuide() {
 
       {os === "other" && (
         <div className="mx-auto max-w-md space-y-4 rounded-2xl bg-gray-50 p-8 dark:bg-gray-800">
+          <Smartphone className="mx-auto h-16 w-16 text-gray-400" />
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
             モバイルデバイスからアクセスしてください
           </h2>
@@ -211,4 +203,3 @@ export function InstallGuide() {
     </div>
   );
 }
-

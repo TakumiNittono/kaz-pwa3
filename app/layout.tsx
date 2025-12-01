@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { OneSignalProvider } from "@/components/OneSignalProvider";
+import { OneSignalInit } from "@/components/OneSignalInit";
 
 export const metadata: Metadata = {
   title: "Free Session App",
@@ -11,9 +11,6 @@ export const metadata: Metadata = {
     capable: true,
     statusBarStyle: "default",
     title: "Free Session",
-  },
-  other: {
-    "mobile-web-app-capable": "yes",
   },
   viewport: {
     width: "device-width",
@@ -37,12 +34,11 @@ export default function RootLayout({
         <link rel="apple-touch-icon" sizes="512x512" href="/icon-512x512.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="mobile-web-app-capable" content="yes" />
       </head>
       <body>
-        <OneSignalProvider>{children}</OneSignalProvider>
+        <OneSignalInit />
+        {children}
       </body>
     </html>
   );
 }
-

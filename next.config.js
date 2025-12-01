@@ -7,8 +7,7 @@ const withPWA = require("@ducanh2912/next-pwa").default({
   disable: process.env.NODE_ENV === "development",
   workboxOptions: {
     disableDevLogs: true,
-    // OneSignalのService Workerと競合しないように設定
-    exclude: [/OneSignalSDKWorker\.js$/],
+    exclude: [/OneSignalSDKWorker\.js$/, /OneSignalSDKUpdaterWorker\.js$/],
   },
 });
 
@@ -18,4 +17,3 @@ const nextConfig = {
 };
 
 module.exports = withPWA(nextConfig);
-
