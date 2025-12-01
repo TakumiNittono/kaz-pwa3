@@ -14,23 +14,36 @@ export function PermissionGate({ onPermissionGranted }: PermissionGateProps) {
     setIsRequesting(true);
 
     try {
-      // OneSignalの通知許可をリクエスト
+      // ボタンを押した後に通知許可をリクエスト
+      // まず、ブラウザの通知APIを使用して許可をリクエスト
+      if ("Notification" in window && Notification.permission === "default") {
+        const permission = await Notification.requestPermission();
+        if (permission !== "granted") {
+          setIsRequesting(false);
+          alert("通知を許可していただく必要があります。設定から通知を有効にしてください。");
+          return;
+        }
+      }
+
+      // その後、OneSignalの通知許可をリクエスト
       await OneSignal.registerForPushNotifications();
       
-      // 購読状態を確認
+      // 少し待ってから購読状態を確認
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      
       const isSubscribed = await OneSignal.isPushNotificationsEnabled();
       
       if (isSubscribed) {
         onPermissionGranted();
       } else {
         // ユーザーが拒否した場合
+        setIsRequesting(false);
         alert("通知を許可していただく必要があります。設定から通知を有効にしてください。");
       }
     } catch (error) {
       console.error("Permission request error:", error);
-      alert("通知の許可に失敗しました。もう一度お試しください。");
-    } finally {
       setIsRequesting(false);
+      alert("通知の許可に失敗しました。もう一度お試しください。");
     }
   };
 
