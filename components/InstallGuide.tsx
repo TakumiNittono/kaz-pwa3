@@ -24,6 +24,8 @@ export function InstallGuide() {
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e);
+      // カスタムインストールボタンを使用するため、デフォルトバナーを抑制
+      // これは意図的な動作です
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
