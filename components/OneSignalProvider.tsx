@@ -17,18 +17,16 @@ export function OneSignalProvider({ children }: OneSignalProviderProps) {
       try {
         // react-onesignalは自動的にService Workerを管理するため、
         // serviceWorkerPathの指定は不要です
+        // OneSignal.initialize()はvoidを返すため、.catch()は使用できません
         OneSignal.initialize(appId, {
           allowLocalhostAsSecureOrigin: true,
           notifyButton: {
             enable: false, // カスタムUIを使用するため無効化
           },
-        } as any).catch((error) => {
-          console.warn('OneSignal initialization warning:', error);
-          // エラーを無視して続行（Service Workerが利用できない場合でも動作するように）
-        });
+        } as any);
       } catch (error) {
         console.warn('OneSignal initialization error:', error);
-        // エラーを無視して続行
+        // エラーを無視して続行（Service Workerが利用できない場合でも動作するように）
       }
     }
   }, []);
