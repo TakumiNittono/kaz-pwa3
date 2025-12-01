@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { InstallGuide } from "@/components/InstallGuide";
 import { PermissionGate } from "@/components/PermissionGate";
 import { FreeSessionButton } from "@/components/FreeSessionButton";
-import { OneSignalProvider } from "@/components/OneSignalProvider";
 import OneSignal from "react-onesignal";
 
 type AppPhase = "install" | "permission" | "unlocked";
@@ -16,11 +15,34 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [oneSignalReady, setOneSignalReady] = useState(false);
 
-  // OneSignal初期化完了時のコールバック
-  const handleOneSignalInitialized = () => {
-    console.log("[App] OneSignal initialized callback received");
-    setOneSignalReady(true);
-  };
+  // OneSignal初期化完了を監視（グローバルイベント）
+  useEffect(() => {
+    const handleOneSignalInitialized = () => {
+      console.log("[App] OneSignal initialized event received");
+      setOneSignalReady(true);
+    };
+
+    window.addEventListener("onesignal-initialized", handleOneSignalInitialized);
+    
+    // 既に初期化済みの場合は即座に設定
+    // 少し待ってからチェック（OneSignalProviderが初期化を開始する時間を確保）
+    const checkInitialized = setTimeout(() => {
+      try {
+        const instance = OneSignal.getOneSignalInstance();
+        if (instance) {
+          console.log("[App] OneSignal already initialized");
+          setOneSignalReady(true);
+        }
+      } catch (e) {
+        // まだ初期化されていない
+      }
+    }, 2000);
+
+    return () => {
+      window.removeEventListener("onesignal-initialized", handleOneSignalInitialized);
+      clearTimeout(checkInitialized);
+    };
+  }, []);
 
   useEffect(() => {
     // PWAとして起動しているか判定（より堅牢な判定）
@@ -198,29 +220,27 @@ export default function Home() {
   }
 
   return (
-    <OneSignalProvider onInitialized={handleOneSignalInitialized}>
-      <main className="flex min-h-screen flex-col items-center justify-center p-4">
-        {phase === "install" && <InstallGuide />}
-        {phase === "permission" && (
-          <PermissionGate
-            onPermissionGranted={async () => {
-              console.log("[PermissionGate] Permission granted, checking subscription...");
-              // 購読状態を再確認
-              try {
-                // 少し待ってから確認（OneSignalの処理が完了するまで）
-                await new Promise((resolve) => setTimeout(resolve, 1000));
-                const subscription = await OneSignal.isPushNotificationsEnabled();
-                console.log("[PermissionGate] Subscription status after grant:", subscription);
-                setIsSubscribed(subscription);
-              } catch (error) {
-                console.error("[PermissionGate] Subscription check error:", error);
-              }
-            }}
-          />
-        )}
-        {phase === "unlocked" && <FreeSessionButton />}
-      </main>
-    </OneSignalProvider>
+    <main className="flex min-h-screen flex-col items-center justify-center p-4">
+      {phase === "install" && <InstallGuide />}
+      {phase === "permission" && (
+        <PermissionGate
+          onPermissionGranted={async () => {
+            console.log("[PermissionGate] Permission granted, checking subscription...");
+            // 購読状態を再確認
+            try {
+              // 少し待ってから確認（OneSignalの処理が完了するまで）
+              await new Promise((resolve) => setTimeout(resolve, 1000));
+              const subscription = await OneSignal.isPushNotificationsEnabled();
+              console.log("[PermissionGate] Subscription status after grant:", subscription);
+              setIsSubscribed(subscription);
+            } catch (error) {
+              console.error("[PermissionGate] Subscription check error:", error);
+            }
+          }}
+        />
+      )}
+      {phase === "unlocked" && <FreeSessionButton />}
+    </main>
   );
 }
 

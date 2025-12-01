@@ -48,21 +48,11 @@ export function OneSignalProvider({ children, onInitialized }: OneSignalProvider
 
       const attemptInitialization = async (): Promise<boolean> => {
         try {
-          // OneSignal SDKが読み込まれるまで待機
-          if (typeof (window as any).OneSignal === "undefined") {
-            console.log(`[OneSignal] SDK not loaded yet, waiting... (attempt ${retryCount + 1}/${maxRetries})`);
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            
-            if (retryCount < maxRetries - 1) {
-              retryCount++;
-              return attemptInitialization();
-            } else {
-              console.error("[OneSignal] SDK failed to load after retries");
-              return false;
-            }
-          }
-
-          // 初期化を実行
+          // react-onesignalのinitializeを呼び出すと、内部的にSDKを読み込む
+          // 直接window.OneSignalをチェックするのではなく、initializeを呼び出してから待機
+          console.log(`[OneSignal] Attempting initialization... (attempt ${retryCount + 1}/${maxRetries})`);
+          
+          // 初期化を実行（SDKがまだ読み込まれていなくても、react-onesignalが内部で処理する）
           OneSignal.initialize(appId, {
             allowLocalhostAsSecureOrigin: true,
             notifyButton: {
@@ -75,6 +65,40 @@ export function OneSignalProvider({ children, onInitialized }: OneSignalProvider
             },
           } as any);
 
+          // SDKが読み込まれるまで待機（最大10秒）
+          let waitCount = 0;
+          const maxWait = 10;
+          while (waitCount < maxWait) {
+            // react-onesignalがSDKを読み込んだか確認
+            // getOneSignalInstance()を使用して確認
+            try {
+              const instance = OneSignal.getOneSignalInstance();
+              if (instance) {
+                console.log("[OneSignal] SDK instance found");
+                break;
+              }
+            } catch (e) {
+              // まだ読み込まれていない
+            }
+            
+            // window.OneSignalも確認（フォールバック）
+            if (typeof (window as any).OneSignal !== "undefined") {
+              console.log("[OneSignal] window.OneSignal found");
+              break;
+            }
+            
+            waitCount++;
+            console.log(`[OneSignal] Waiting for SDK to load... (${waitCount}/${maxWait})`);
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+          }
+
+          if (waitCount >= maxWait && retryCount < maxRetries - 1) {
+            retryCount++;
+            console.log(`[OneSignal] SDK not loaded, retrying... (${retryCount}/${maxRetries})`);
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            return attemptInitialization();
+          }
+
           // 初期化が完了するまで少し待機
           await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -83,6 +107,12 @@ export function OneSignalProvider({ children, onInitialized }: OneSignalProvider
           console.log("[OneSignal] Initialization completed successfully");
           setIsReady(true);
           onInitialized?.();
+          
+          // グローバルイベントを発火（他のコンポーネントが監視できるように）
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("onesignal-initialized"));
+          }
+          
           return true;
         } catch (error) {
           console.error("[OneSignal] Initialization error:", error);

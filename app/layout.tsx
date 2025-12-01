@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { OneSignalProvider } from "@/components/OneSignalProvider";
 
 export const metadata: Metadata = {
   title: "Free Session App",
@@ -39,7 +40,7 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
       <body>
-        {children}
+        <OneSignalProvider>{children}</OneSignalProvider>
       </body>
     </html>
   );
