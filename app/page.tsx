@@ -54,18 +54,21 @@ export default function Home() {
     checkSubscription();
 
     // 定期的に購読状態をチェック（許可されていない場合のみ、3秒ごと）
-    const intervalId = setInterval(() => {
-      if (!isSubscribed) {
-        OneSignal.isPushNotificationsEnabled()
-          .then((enabled) => setIsSubscribed(enabled))
-          .catch(() => {});
+    const intervalId = setInterval(async () => {
+      try {
+        const enabled = await OneSignal.isPushNotificationsEnabled();
+        if (enabled) {
+          setIsSubscribed(true);
+        }
+      } catch (error) {
+        // エラーは無視
       }
     }, 3000);
 
     return () => {
       clearInterval(intervalId);
     };
-  }, [isSubscribed]);
+  }, []);
 
   useEffect(() => {
     // フェーズの決定
