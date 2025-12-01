@@ -12,6 +12,9 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
     title: "Free Session",
   },
+  other: {
+    "mobile-web-app-capable": "yes",
+  },
   viewport: {
     width: "device-width",
     initialScale: 1,
