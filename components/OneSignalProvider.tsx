@@ -14,8 +14,7 @@ export function OneSignalProvider({ children }: OneSignalProviderProps) {
     const appId = process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID || "";
 
     if (typeof window !== "undefined" && appId) {
-      OneSignal.init({
-        appId: appId,
+      OneSignal.initialize(appId, {
         allowLocalhostAsSecureOrigin: true,
         notifyButton: {
           enable: false, // カスタムUIを使用するため無効化
