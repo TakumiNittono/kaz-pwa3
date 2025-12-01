@@ -23,14 +23,24 @@ export default function Home() {
           (window.navigator as any).standalone === true ||
           document.referrer.includes("android-app://");
         setIsStandalone(isStandaloneMode);
+        return isStandaloneMode;
       }
+      return false;
     };
 
-    checkStandalone();
+    const isStandaloneMode = checkStandalone();
 
-    // OneSignalの購読状態を確認
+    // ブラウザでのアクセス時はOneSignalのチェックをスキップして即座に表示
+    if (!isStandaloneMode) {
+      setIsLoading(false);
+      return;
+    }
+
+    // PWA起動時のみOneSignalの購読状態を確認
     const checkSubscription = async () => {
       try {
+        // OneSignalの初期化を少し待つ
+        await new Promise((resolve) => setTimeout(resolve, 500));
         const subscription = await OneSignal.isPushNotificationsEnabled();
         setIsSubscribed(subscription);
       } catch (error) {
@@ -41,22 +51,21 @@ export default function Home() {
       }
     };
 
-    // OneSignalの初期化を待つ
-    const timer = setTimeout(() => {
-      checkSubscription();
-    }, 1000);
+    checkSubscription();
 
-    // 定期的に購読状態をチェック（5秒ごと）
-    // OneSignal.on()は使用できないため、定期的なチェックで対応
+    // 定期的に購読状態をチェック（許可されていない場合のみ、3秒ごと）
     const intervalId = setInterval(() => {
-      checkSubscription();
-    }, 5000);
+      if (!isSubscribed) {
+        OneSignal.isPushNotificationsEnabled()
+          .then((enabled) => setIsSubscribed(enabled))
+          .catch(() => {});
+      }
+    }, 3000);
 
     return () => {
-      clearTimeout(timer);
       clearInterval(intervalId);
     };
-  }, []);
+  }, [isSubscribed]);
 
   useEffect(() => {
     // フェーズの決定
