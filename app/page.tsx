@@ -36,18 +36,19 @@ export default function Home() {
       return;
     }
 
-    // PWA起動時のみOneSignalの購読状態を確認
+    // PWA起動時は即座に画面を表示（通知プロンプトをすぐに表示）
+    setIsLoading(false);
+
+    // バックグラウンドでOneSignalの購読状態を確認
     const checkSubscription = async () => {
       try {
-        // OneSignalの初期化を少し待つ
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        // OneSignalの初期化を少し待つ（短縮）
+        await new Promise((resolve) => setTimeout(resolve, 100));
         const subscription = await OneSignal.isPushNotificationsEnabled();
         setIsSubscribed(subscription);
       } catch (error) {
         console.error("OneSignal subscription check error:", error);
         setIsSubscribed(false);
-      } finally {
-        setIsLoading(false);
       }
     };
 
