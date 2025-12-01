@@ -19,6 +19,10 @@ export function OneSignalProvider({ children }: OneSignalProviderProps) {
         notifyButton: {
           enable: false, // カスタムUIを使用するため無効化
         },
+        serviceWorkerParam: {
+          scope: '/',
+        },
+        serviceWorkerPath: '/OneSignalSDKWorker.js',
       });
     }
   }, []);
