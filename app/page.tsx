@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { InstallGuide } from "@/components/InstallGuide";
 import { PermissionGate } from "@/components/PermissionGate";
 import { FreeSessionButton } from "@/components/FreeSessionButton";
+import { OneSignalProvider } from "@/components/OneSignalProvider";
 import OneSignal from "react-onesignal";
 
 type AppPhase = "install" | "permission" | "unlocked";
