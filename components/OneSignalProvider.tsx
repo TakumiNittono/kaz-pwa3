@@ -23,6 +23,11 @@ export function OneSignalProvider({ children }: OneSignalProviderProps) {
           notifyButton: {
             enable: false, // カスタムUIを使用するため無効化
           },
+          promptOptions: {
+            slidedown: {
+              enabled: false, // カスタムUIを使用するため無効化
+            },
+          },
         } as any);
       } catch (error) {
         console.warn('OneSignal initialization error:', error);

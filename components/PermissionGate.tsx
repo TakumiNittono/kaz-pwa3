@@ -53,12 +53,10 @@ export function PermissionGate({ onPermissionGranted }: PermissionGateProps) {
           </svg>
         </div>
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          通知を受け取って
-          <br />
-          特典をアンロック
+          最新情報を受け取る
         </h1>
         <p className="text-lg text-gray-600 dark:text-gray-300">
-          通知を許可すると、Free Sessionへのアクセス権が得られます
+          通知を許可すると、最新情報や特典をお届けします
         </p>
       </div>
 
@@ -99,7 +97,7 @@ export function PermissionGate({ onPermissionGranted }: PermissionGateProps) {
 
         <div className="rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            💡 通知を許可することで、最新情報や特典をお届けします
+            Subscribe to our notifications for the latest news
           </p>
         </div>
       </div>
