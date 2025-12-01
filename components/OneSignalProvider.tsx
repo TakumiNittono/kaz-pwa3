@@ -15,16 +15,14 @@ export function OneSignalProvider({ children }: OneSignalProviderProps) {
 
     if (typeof window !== "undefined" && appId) {
       try {
+        // react-onesignalは自動的にService Workerを管理するため、
+        // serviceWorkerPathの指定は不要です
         OneSignal.initialize(appId, {
           allowLocalhostAsSecureOrigin: true,
           notifyButton: {
             enable: false, // カスタムUIを使用するため無効化
           },
-          serviceWorkerPath: '/OneSignalSDKWorker.js',
-          serviceWorkerParam: {
-            scope: '/',
-          },
-        }).catch((error) => {
+        } as any).catch((error) => {
           console.warn('OneSignal initialization warning:', error);
           // エラーを無視して続行（Service Workerが利用できない場合でも動作するように）
         });
