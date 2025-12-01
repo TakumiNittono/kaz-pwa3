@@ -49,6 +49,13 @@ export function PermissionGate({ onPermissionGranted }: PermissionGateProps) {
 
   return (
     <div className="w-full max-w-md space-y-8 text-center">
+      {/* 下のラベルを先に表示 */}
+      <div className="rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          Subscribe to our notifications for the latest news
+        </p>
+      </div>
+
       <div className="space-y-4">
         <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500">
           <svg
@@ -107,12 +114,6 @@ export function PermissionGate({ onPermissionGranted }: PermissionGateProps) {
             "通知を許可する"
           )}
         </button>
-
-        <div className="rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Subscribe to our notifications for the latest news
-          </p>
-        </div>
       </div>
     </div>
   );
