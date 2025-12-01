@@ -47,6 +47,7 @@ export default function Home() {
     }, 1000);
 
     // 定期的に購読状態をチェック（5秒ごと）
+    // OneSignal.on()は使用できないため、定期的なチェックで対応
     const intervalId = setInterval(() => {
       checkSubscription();
     }, 5000);
