@@ -4,7 +4,7 @@ import { useState } from "react";
 import OneSignal from "react-onesignal";
 
 interface PermissionGateProps {
-  onPermissionGranted: () => void;
+  onPermissionGranted: () => void | Promise<void>;
 }
 
 export function PermissionGate({ onPermissionGranted }: PermissionGateProps) {

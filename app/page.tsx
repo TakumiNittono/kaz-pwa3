@@ -46,12 +46,15 @@ export default function Home() {
       checkSubscription();
     }, 1000);
 
-    // 購読状態の変更を監視
-    OneSignal.on("subscriptionChange", (isSubscribed: boolean) => {
-      setIsSubscribed(isSubscribed);
-    });
+    // 定期的に購読状態をチェック（5秒ごと）
+    const intervalId = setInterval(() => {
+      checkSubscription();
+    }, 5000);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      clearInterval(intervalId);
+    };
   }, []);
 
   useEffect(() => {
@@ -81,7 +84,19 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-4">
       {phase === "install" && <InstallGuide />}
-      {phase === "permission" && <PermissionGate onPermissionGranted={() => setIsSubscribed(true)} />}
+      {phase === "permission" && (
+        <PermissionGate
+          onPermissionGranted={async () => {
+            // 購読状態を再確認
+            try {
+              const subscription = await OneSignal.isPushNotificationsEnabled();
+              setIsSubscribed(subscription);
+            } catch (error) {
+              console.error("Subscription check error:", error);
+            }
+          }}
+        />
+      )}
       {phase === "unlocked" && <FreeSessionButton />}
     </main>
   );
